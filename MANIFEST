@@ -1,0 +1,19 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/01basic.t
+t/02types.t
+t/03operations.t
+t/04binding.t
+t/05service.t
+t/06parsing.t
+t/My/Foo.pm
+t/My/OperationTest.pm
+t/My/BindingTest.pm
+t/My/ServiceTest.pm
+t/My/Server.pm
+t/My/TypeTest.pm
+t/My/WrongTypeTest.pm
+lib/Pod/WSDL.pm
+META.yml                                 Module meta-data (added by MakeMaker)
