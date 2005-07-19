@@ -15,6 +15,7 @@ WriteMakefile(
     	'Pod::WSDL::Writer' => 0.01,
     	'Pod::WSDL::Utils' => 0.01,
     	'IO::Scalar' => 2.110,
+    	'XML::XPath' => 1.13,
     	'Pod::Text' => 2.21},
     ($] >= 5.006 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Pod/WSDL.pm', # retrieve abstract from module
