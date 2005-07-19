@@ -1,10 +1,21 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         Pod-WSDL
-version:      0.01
+version:      0.02
 version_from: lib/Pod/WSDL.pm
 installdirs:  site
 requires:
+    IO::Scalar:                    2.11
+    Pod::Text:                     2.21
+    Pod::WSDL::AUTOLOAD:           0.01
+    Pod::WSDL::Doc:                0.01
+    Pod::WSDL::Fault:              0.01
+    Pod::WSDL::Method:             0.01
+    Pod::WSDL::Param:              0.01
+    Pod::WSDL::Return:             0.01
+    Pod::WSDL::Type:               0.01
+    Pod::WSDL::Utils:              0.01
+    Pod::WSDL::Writer:             0.01
 
 distribution_type: module
 generated_by: ExtUtils::MakeMaker version 6.17
