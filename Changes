@@ -4,3 +4,4 @@ Revision history for Perl extension Pod::WSDL.
 	- original version; created by h2xs 1.23 with options
 		-A -X Pod::WSDL
 
+0.03  Packed everything in one distribution

@@ -5,16 +5,9 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME              => 'Pod::WSDL',
     VERSION_FROM      => 'lib/Pod/WSDL.pm', # finds $VERSION
-    PREREQ_PM         => {'Pod::WSDL::AUTOLOAD' => 0.01,
-    	'Pod::WSDL::Method' => 0.01,
-    	'Pod::WSDL::Param' => 0.01,
-    	'Pod::WSDL::Doc' => 0.01,
-    	'Pod::WSDL::Return' => 0.01,
-    	'Pod::WSDL::Fault' => 0.01,
-    	'Pod::WSDL::Type' => 0.01,
-    	'Pod::WSDL::Writer' => 0.01,
-    	'Pod::WSDL::Utils' => 0.01,
+    PREREQ_PM         => {'XML::Writer' => 0.531,
     	'IO::Scalar' => 2.110,
+    	'XML::XPath' => 1.13,
     	'XML::XPath' => 1.13,
     	'Pod::Text' => 2.21},
     ($] >= 5.006 ?     ## Add these new keywords supported since 5.005
