@@ -30,6 +30,29 @@ _RETURN @string
 
 sub testArray {}
 
+=begin WSDL
+
+_IN in @string
+
+=cut
+
+sub testEmpty {}
+
+=begin WSDL
+
+_IN in @string
+_ONEWAY
+
+=cut
+
+sub testOneway {}
+
+=begin WSDL
+
+=cut
+
+sub testNoReturnNoParam {}
+
 sub testWithoutPod {}
 
 1;

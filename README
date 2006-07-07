@@ -242,9 +242,6 @@ EXTERNAL DEPENDENCIES
 EXAMPLES
     see the *.t files in the distribution
 
-BUGS
-    Please send me any bug reports, I will fix them or mention the bugs here
-    :-)
 
 TODO
   Describe Several Signatures for one Method
@@ -312,10 +309,24 @@ AUTHOR
     Tarek Ahmed, <luke.lubbock -the character every email address contains-
     gmx.net>
 
-COPYRIGHT AND LICENSE
-    Copyright (C) 2005 by Tarek Ahmed
+VERSION INFORMATION
+    This man page documents Pod::WSDL, version 0.04 and previous.
+  
+BUGS
+    For a question of efficiency, please report any bug you find on CPAN:
+    http://rt.cpan.org/Public/Dist/Display.html?Status=Active&Name=Pod-WSDL
+    There you'll also be able to find out a list of unresolved bugs 
+    (hopefully empty ;-)).
 
-    This library is free software; you can redistribute it and/or modify it
-    under the same terms as Perl itself, either Perl version 5.8.5 or, at
-    your option, any later version of Perl 5 you may have available.
+ACKNOLEDGEMENTS
+    Marcos Marado (Mind Booster Noori) from SonaeCom helped developing the 0.04
+    version of Pod::WSDL.
+
+COPYRIGHT AND LICENSE
+    Copyright (C) 2006 by Tarek Ahmed
+
+	This library is alpha software and comes with no warranty whatsoever.
+	It is free software; you can redistribute it and/or modify
+	it under the same terms as Perl itself, either Perl version 5.8.5 or,
+	at your option, any later version of Perl 5 you may have available.
 

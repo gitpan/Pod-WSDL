@@ -4,4 +4,14 @@ Revision history for Perl extension Pod::WSDL.
 	- original version; created by h2xs 1.23 with options
 		-A -X Pod::WSDL
 
-0.03  Packed everything in one distribution
+0.03  Tue Jul 20 00:06:00 2005  
+  - Packed everything in one distribution
+
+0.04  
+   - Fixed bug: warnings issued by XML::Writer, when using Pod for methods
+     without parameters
+   - Fixed unnecessary requirement for Perl version 5.8.5
+   - Fixed bug in the generated WSDL for certain cases where complex types were
+     used
+   - Fixed error in documentation
+   - Fixed error which led to failure if wrong parameters were being used

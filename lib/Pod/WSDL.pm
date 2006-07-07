@@ -4,9 +4,6 @@ package Pod::WSDL;
 # TODO: non RPC style bindings
 # TODO: read type information alternatively from own file
 # TODO: write soapAction attribute in operations?
-# TODO: write more tests, like ...
-# TODO: test empty message
-# TODO: test oneway messages
 
 use strict;
 use warnings;
@@ -27,18 +24,18 @@ use Pod::WSDL::AUTOLOAD;
 # ------------------ > "CONSTANTS" ----------------------------------------- #
 # -------------------------------------------------------------------------- #
 
-our $VERSION = "0.03";
-our @ISA = qw/Pod::WSDL::AUTOLOAD/;
+our $VERSION                = "0.04";
+our @ISA                    = qw/Pod::WSDL::AUTOLOAD/;
 
 our $WSDL_METHOD_REGEXP_BEG = qr/^=(?:begin)\s+wsdl\s*\n(.*?)^=(?:cut|end\s+wsdl).*?^\s*sub\s+(\w+)/ims;
 our $WSDL_METHOD_REGEXP_FOR = qr/^=(?:for)\s+wsdl\s*\n(.*?)\n\n^\s*sub\s+(\w+)/ims;
-our $WSDL_TYPE_REGEXP_BEG = qr/^=(?:begin)\s+wsdl\s*\n(.*?_ATTR.*?)^=(?:cut|end\s+wsdl)/ims;
-our $WSDL_TYPE_REGEXP_FOR = qr/^=(?:for)\s+wsdl\s*\n(.*?_ATTR.*?)\n\n/ims;
+our $WSDL_TYPE_REGEXP_BEG   = qr/^=(?:begin)\s+wsdl\s*\n(.*?_ATTR.*?)^=(?:cut|end\s+wsdl)/ims;
+our $WSDL_TYPE_REGEXP_FOR   = qr/^=(?:for)\s+wsdl\s*\n(.*?_ATTR.*?)\n\n/ims;
 
-our $DEFAULT_BASE_NAME     = 'myService';
-our $PORT_TYPE_SUFFIX_NAME = 'Handler';
-our $BINDING_SUFFIX_NAME   = 'SoapBinding';
-our $SERVICE_SUFFIX_NAME   = 'Service';
+our $DEFAULT_BASE_NAME      = 'myService';
+our $PORT_TYPE_SUFFIX_NAME  = 'Handler';
+our $BINDING_SUFFIX_NAME    = 'SoapBinding';
+our $SERVICE_SUFFIX_NAME    = 'Service';
 
 # Pod::WSDL::AUTOLOAD uses this
 our %FORBIDDEN_METHODS = (
@@ -126,7 +123,6 @@ sub addNamespace {
 	my $decl = shift;
 	
 	croak "I need a namespace, died" unless defined $uri;
-	croak "I need a file or filehandle or module name, died" unless defined $uri;
 	
 	defined $decl or $decl = $me->{_generateNS};
 	
@@ -178,7 +174,8 @@ sub _initTypes {
 	my $me = shift;
 	
 	for my $method (@{$me->{_methods}}) {
-		for my $param (@{$method->params}) {
+    for my $param (@{$method->params},$method->return) {
+      next unless $param;
 			unless (exists $XSD_STANDARD_TYPE_MAP{$param->type}) {
 				$me->_addType($param->type, $param->array);
 			} elsif ($param->array) {
@@ -276,7 +273,7 @@ sub _parseMethodPod {
 			$method->doc(new Pod::WSDL::Doc($_));
 		} elsif (/^_FAULT\s+/i) {
 			$method->addFault(new Pod::WSDL::Fault($_));
-		} elsif (/^_ONEWAY\s+/i) {
+		} elsif (/^_ONEWAY\s*$/i) {
 			$method->oneway(1);
 		}
 	}
@@ -580,11 +577,11 @@ source - Name of the source file, package of the source module or file handle on
 
 =item
 
-location - Target namespace for the WSDL, usually the URL of your webservice.
+location - Target namespace for the WSDL, usually the full URL of your webservice's proxy.
 
 =item
 
-pretty - Pretty print WSDL, if true. Otherwise the WSDL will come out in one line. The software generating the client stubs might like that, but a person reading the WSDL won't!
+pretty - Pretty print WSDL, if true. Otherwise the WSDL will come out in one line. The software generating the client stubs might not mind, but a person reading the WSDL will!
 
 =item
 
@@ -692,9 +689,10 @@ Tarek Ahmed, E<lt>luke.lubbock -the character every email address contains- gmx.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005 by Tarek Ahmed
+Copyright (C) 2006 by Tarek Ahmed
 
-This library is free software; you can redistribute it and/or modify
+This library is alpha software and comes with no warranty whatsoever.
+It is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.5 or,
 at your option, any later version of Perl 5 you may have available.
 

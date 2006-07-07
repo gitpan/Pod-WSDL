@@ -1,14 +1,12 @@
 package Pod::WSDL::Type;
 
-# TODO: Documented and written tests for Pod::WSDL::Type
-
 use strict;
 use warnings;
 use Pod::WSDL::Attr;
 use Pod::WSDL::Utils qw(:writexml :namespaces :types);
 use Pod::WSDL::AUTOLOAD;
 
-our $VERSION = "0.02";
+our $VERSION = "0.04";
 our @ISA = qw/Pod::WSDL::AUTOLOAD/;
 
 our %FORBIDDEN_METHODS = (
@@ -142,7 +140,7 @@ This module is used internally by Pod::WSDL. It is unlikely that you have to int
 
 Instantiates a new Pod::WSDL::Type.
 
-=head2 Parameters
+=head3 Parameters
 
 =over 4
 
@@ -163,6 +161,10 @@ descr - description of the type
 pod - the wsdl pod of the type. Please see the section "Pod Syntax" in the description of Pod::WSDL.
 
 =back
+
+=head2 writeComplexType
+
+Write complex type element for XML output. Takes one parameter: ownTypes, reference to hash with own type information
 
 =head1 EXTERNAL DEPENDENCIES
 
@@ -190,7 +192,7 @@ Tarek Ahmed, E<lt>luke.lubbock -the character every email address contains- gmx.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005 by Tarek Ahmed
+Copyright (C) 2006 by Tarek Ahmed
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.5 or,

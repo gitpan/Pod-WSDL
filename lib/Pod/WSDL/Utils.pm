@@ -13,7 +13,7 @@ our %EXPORT_TAGS = (
 );
 
 our @EXPORT_OK = (@{$EXPORT_TAGS{writexml}}, @{$EXPORT_TAGS{namespaces}}, @{$EXPORT_TAGS{messages}}, @{$EXPORT_TAGS{types}});
-our $VERSION = "0.02";
+our $VERSION = "0.04";
 
 # writexml
 our $END_PREFIX_NAME       = 'end';
@@ -101,15 +101,17 @@ sub getTypeDescr {
 	my $array    = shift;
 	my $ownType  = shift;
 	
-	if (exists $XSD_STANDARD_TYPE_MAP{$typeName}) {
+	if ((defined $typeName) and (exists $XSD_STANDARD_TYPE_MAP{$typeName})) {
 		if ($array) {
 			return $TARGET_NS_DECL . ':' . $ARRAY_PREFIX_NAME . ucfirst $typeName;
 		} else {
 			return 'xsd:' . $typeName;
 		}
-	} else {
+	} elsif (defined $ownType) {
 		return $TARGET_NS_DECL . ':' . ($array ? $ARRAY_PREFIX_NAME . ucfirst $ownType->wsdlName : $ownType->wsdlName);
-	}
+	} else {
+    return undef;
+  }
 }
 
 1;
@@ -117,7 +119,7 @@ __END__
 
 =head1 NAME
 
-Pod::WSDL::Utils - Utilities and constants for Pod::WSDL
+Pod::WSDL::Utils - Utilities and constants for Pod::WSDL (internal use only)
 
 =head1 DESCRIPTION
 
@@ -155,7 +157,7 @@ Tarek Ahmed, E<lt>luke.lubbock -the character every email address contains- gmx.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005 by Tarek Ahmed
+Copyright (C) 2006 by Tarek Ahmed
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.5 or,

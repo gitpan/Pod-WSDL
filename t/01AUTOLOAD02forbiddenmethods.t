@@ -27,7 +27,6 @@ sub miaow {
 1;
 
 package main;
-use Data::Dumper;
 use Test::More tests => 9;
 no warnings;
 

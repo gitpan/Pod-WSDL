@@ -11,6 +11,15 @@ _DOC bla bla
 
 sub testGeneral {}
 
+=begin WSDL
+
+_IN in @string
+_ONEWAY
+
+=cut
+
+sub testOneway {}
+
 sub testWithoutPod {}
 
 1;

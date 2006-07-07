@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 package Pod::WSDL;
-use Test::More tests => 19;
+use Test::More tests => 23;
 BEGIN {use_ok('Pod::WSDL');}
 use lib length $0 > 14 ? substr $0, 0, length($0) - 20 : '.';
 use strict;
@@ -42,7 +42,16 @@ ok($xp->exists('/wsdl:definitions/wsdl:portType[@name = "MyOperationTestHandler"
 ok($xp->exists('/wsdl:definitions/wsdl:message[@name = "testArrayRequest"]/wsdl:part[@name = "in" and @type = "tns1:ArrayOfString"]'), 'Found correct part element "in" for message "testArrayRequest" in xml output.');
 ok($xp->exists('/wsdl:definitions/wsdl:message[@name = "testArrayResponse"]/wsdl:part[@name = "testArrayReturn" and @type = "tns1:ArrayOfString"]'), 'Found correct part element "testArrayReturn" for message "testArrayResponse" in xml output.');
 
+# test empty message
+ok($xp->exists('/wsdl:definitions/wsdl:message[@name = "testOnewayRequest"]'), 'Found message element with name "testOnewayRequest" for message "testOneway" in xml output.');
+
+# test oneway message
+ok($xp->exists('/wsdl:definitions/wsdl:message[@name = "empty"]'), 'Found message element with name "empty" for message "testEmpty" in xml output.');
+ok($xp->exists('/wsdl:definitions/wsdl:portType[@name = "MyOperationTestHandler"]/wsdl:operation[@name = "testOneway" and @parameterOrder = "in"]/wsdl:input[@message = "impl:testOnewayRequest" and @name="testOnewayRequest"]'), 'Found input message for operation element "testOneway".');
+ok(!$xp->exists('/wsdl:definitions/wsdl:portType[@name = "MyOperationTestHandler"]/wsdl:operation[@name = "testOneway" and @parameterOrder = "in"]/wsdl:output'), 'Did not find output message (which is correct) for operation element "testOneway".');
+
+
 # test method without wsdl pod
 ok(!$xp->exists('/wsdl:definitions/wsdl:message[@name = "testWithoutPodRequest"]') && !$xp->exists('/wsdl:definitions/wsdl:message[@name = "testWithoutPodResponse"]'), 'Non pod messages not found xml output.');
 
-#print $xmlOutput;
+print $xmlOutput;

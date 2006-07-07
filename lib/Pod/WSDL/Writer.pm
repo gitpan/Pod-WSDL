@@ -6,7 +6,7 @@ use XML::Writer;
 use Pod::WSDL::Utils ':writexml';
 
 our $AUTOLOAD;
-our $VERSION = "0.02";
+our $VERSION = "0.04";
 
 our $INDENT_CHAR = "\t";
 our $NL_CHAR     = "\n";
@@ -27,6 +27,7 @@ sub new {
 		_indent              => 1,
 		_lastTag             => '',
 		_faultMessageWritten => {},
+		_emptyMessageWritten => 0,
 	}, $pkg;
 
 	$me->{_writer} = new XML::Writer(OUTPUT => $me->{_outStr});
@@ -117,6 +118,18 @@ sub faultMessageWritten {
 	return $me->{_faultMessageWritten}->{$arg};
 }
 
+sub registerWrittenEmptyMessage {
+	my $me = shift;
+	
+	return $me->{_emptyMessageWritten} = 1;
+}
+
+sub emptyMessageWritten {
+	my $me = shift;
+	
+	return $me->{_emptyMessageWritten};
+}
+
 sub AUTOLOAD {
     my $me     = shift;
     
@@ -136,7 +149,7 @@ __END__
 
 =head1 NAME
 
-Pod::WSDL::Writer - Writes XML output for Pod::WSDL
+Pod::WSDL::Writer - Writes XML output for Pod::WSDL (internal use only)
 
 =head1 SYNOPSIS
 
@@ -203,7 +216,7 @@ Tarek Ahmed, E<lt>luke.lubbock -the character every email address contains- gmx.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005 by Tarek Ahmed
+Copyright (C) 2006 by Tarek Ahmed
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.5 or,

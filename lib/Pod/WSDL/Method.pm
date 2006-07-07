@@ -1,7 +1,5 @@
 package Pod::WSDL::Method;
 
-# TODO: Document and write tests for Pod::WSDL::Method
-
 use strict;
 use warnings;
 use Pod::WSDL::Param;
@@ -12,7 +10,7 @@ use Pod::WSDL::Writer;
 use Pod::WSDL::Utils qw(:writexml :namespaces :messages);
 use Pod::WSDL::AUTOLOAD;
 
-our $VERSION = "0.02";
+our $VERSION = "0.04";
 our @ISA = qw/Pod::WSDL::AUTOLOAD/;
 
 our $EMPTY_MESSAGE_NAME    = 'empty';
@@ -35,7 +33,7 @@ sub new {
 	my ($pkg, %data) = @_;
 	
 	die "A method needs a name, died"   unless defined $data{name};
-	die "A method needs a writer, died" unless defined $data{writer};
+	die "A method needs a writer, died" unless defined $data{writer} and ref $data{writer} eq 'Pod::WSDL::Writer';
 	
 	bless {
 		_name                => $data{name},
@@ -79,9 +77,9 @@ sub writeMessages {
 			$me->_writeMessageResponseElem($types, $style, $wrapped);
 			$me->writer->wrNewLine;
 		} else {
-			unless ($me->emptyMessageWritten) {
+			unless ($me->writer->emptyMessageWritten) {
 				$me->writer->wrElem($EMPTY_PREFIX_NAME, 'wsdl:message', name => $EMPTY_MESSAGE_NAME);
-				$me->emptyMessageWritten(1);
+				$me->writer->registerWrittenEmptyMessage;
 				$me->writer->wrNewLine;
 			}
 		}
@@ -111,7 +109,7 @@ sub writePortTypeOperation {
 	my $inputName  = $name . $REQUEST_SUFFIX_NAME;
 	my $outputName = $name . $RESPONSE_SUFFIX_NAME;
 
-	$me->writer->wrElem($START_PREFIX_NAME, 'wsdl:operation', name => $name, parameterOrder => ($paramOrder ? $paramOrder : undef));
+	$me->writer->wrElem($START_PREFIX_NAME, 'wsdl:operation', name => $name, parameterOrder => ($paramOrder ? $paramOrder : ""));
 	$me->writer->wrDoc($me->doc->descr);
 	$me->writer->wrElem($EMPTY_PREFIX_NAME, 'wsdl:input', message => "$IMPL_NS_DECL:$inputName", name => $inputName);
 	
@@ -299,7 +297,7 @@ Pod::WSDL::Method - Represents a method in Pod::WSDL (internal use only)
 =head1 SYNOPSIS
 
   use Pod::WSDL::Method;
-  my $m = new Pod::WSDL::Method(name => 'mySub', doc  => new Pod::WSDL::Doc($docStr), return => new Pod::WSDL::Return($retStr));
+  my $m = new Pod::WSDL::Method(name => 'mySub', writer => 'myWriter', doc => new Pod::WSDL::Doc($docStr), return => new Pod::WSDL::Return($retStr));
 
 =head1 DESCRIPTION
 
@@ -335,6 +333,14 @@ params - ref to array of Pod::WSDL::Param objects, can be ommitted, use addParam
 
 faults - ref to array of Pod::WSDL::Fault objects, can be ommitted, use addFault() later
 
+=item
+
+oneway - if true, method is a one way operation
+
+=item
+
+writer - XML::Writer-Object for output, mandatory
+
 =back
 
 =head2 addParam
@@ -347,11 +353,31 @@ Add a Pod::WSDL::Fault object to Pod::WSDL::Method
 
 =head2 return
 
-Set the Pod::WSDL::Return object for Pod::WSDL::Method
+Get or Set the Pod::WSDL::Return object for Pod::WSDL::Method
 
 =head2 doc
 
-Set the Pod::WSDL::Doc object for Pod::WSDL::Method
+Get or Set the Pod::WSDL::Doc object for Pod::WSDL::Method
+
+=head2 requestName
+
+Get name for request in XML output
+
+=head2 responseName
+
+Get name for response in XML output
+
+=head2 writeBindingOperation
+
+Write operation child for binding element in XML output
+
+=head2 writeMessages
+
+Write message elements in XML output
+
+=head2 writePortTypeOperation
+
+Write operation child for porttype element in XML output
 
 =head1 EXTERNAL DEPENDENCIES
 
@@ -379,7 +405,7 @@ Tarek Ahmed, E<lt>luke.lubbock -the character every email address contains- gmx.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005 by Tarek Ahmed
+Copyright (C) 2006 by Tarek Ahmed
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.5 or,

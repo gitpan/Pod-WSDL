@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 package Pod::WSDL;
-use Test::More tests => 12;
+use Test::More tests => 15;
 BEGIN {use_ok('Pod::WSDL');}
 use lib length $0 > 11 ? substr $0, 0, length($0) - 17 : '.';
 use strict;
@@ -43,8 +43,17 @@ ok($xp->exists('/wsdl:definitions/wsdl:binding[@name="MyBindingTestSoapBinding" 
 ok($xp->exists('/wsdl:definitions/wsdl:binding[@name="MyBindingTestSoapBinding" and @type="impl:MyBindingTestHandler"]/wsdl:operation[@name="testGeneral"]/wsdl:fault[@name = "MyFoo"]'), 'Found wsdl:fault in operation "testGeneral" element.');
 ok($xp->exists('/wsdl:definitions/wsdl:binding[@name="MyBindingTestSoapBinding" and @type="impl:MyBindingTestHandler"]/wsdl:operation[@name="testGeneral"]/wsdl:fault[@name = "MyFoo"]/wsdlsoap:fault[@encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" and @namespace="http://localhost/My/BindingTest" and @use="encoded"]'), 'Found wsdlsoap:fault in wsdl:fault element.');
 
+# one-way operation
+ok($xp->exists('/wsdl:definitions/wsdl:binding[@name="MyBindingTestSoapBinding" and @type="impl:MyBindingTestHandler"]/wsdl:operation[@name="testOneway"]/wsdl:input[@name = "testOnewayRequest"]'), 'Found wsdl:input in operation "testOneway" element.');
+ok($xp->exists('/wsdl:definitions/wsdl:binding[@name="MyBindingTestSoapBinding" and @type="impl:MyBindingTestHandler"]/wsdl:operation[@name="testOneway"]/wsdl:input[@name = "testOnewayRequest"]/wsdlsoap:body[@encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" and @namespace="http://localhost/My/BindingTest" and @use="encoded"]'), 'Found wsdlsoap:body in wsdl:input element.');
+
+# output
+ok(!$xp->exists('/wsdl:definitions/wsdl:binding[@name="MyBindingTestSoapBinding" and @type="impl:MyBindingTestHandler"]/wsdl:operation[@name="testOneway"]/wsdl:output[@name = "testOnewayResponse"]'), 'Did not find wsdl:output in operation "testOneway" element (which is correct).');
+
 # test method without wsdl pod
 ok(!$xp->exists('/wsdl:definitions/wsdl:binding[@name="MyBindingTestSoapBinding" and @type="impl:MyBindingTestHandler"]/wsdl:operation[@name="testWithoutPod"]'), 'Non pod operation not found in binding.');
+
+#print $xmlOutput;
 
 __END__
 # just to make writing tests easier ...

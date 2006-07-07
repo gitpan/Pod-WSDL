@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
-use Test::More tests => 15;
+package Pod::WSDL::Method;
+
+use Test::More tests => 21;
 BEGIN {use_ok('Pod::WSDL::Method')}
 use strict;
 use warnings;
@@ -7,6 +9,7 @@ use Pod::WSDL::Return;
 use Pod::WSDL::Param;
 use Pod::WSDL::Doc;
 use Pod::WSDL::Fault;
+use Pod::WSDL::Writer;
 
 my $m;
 
@@ -25,13 +28,15 @@ my $par2 = new Pod::WSDL::Param('_OUT yourParam $string This parameter is for bl
 my $fau1 = new Pod::WSDL::Fault('_FAULT My::Fault This happens if something happens');
 my $fau2 = new Pod::WSDL::Fault('_FAULT My::Fault This happens if nothing happens');
 
-$m = new Pod::WSDL::Method(name => "myMethod", return => $ret1, doc => $doc1, params => [$par1], faults => [$fau1], writer => 1);
+$m = new Pod::WSDL::Method(name => "myMethod", return => $ret1, doc => $doc1, params => [$par1], faults => [$fau1], writer => new Pod::WSDL::Writer);
 
 ok($m->name eq 'myMethod', 'Retrieving name works');
+ok($m->oneway == 0, 'Default for oneway set correctly');
 ok((ref $m->return eq 'Pod::WSDL::Return' and $m->return->type eq 'string'), 'Retrieving return works');
 ok((ref $m->doc eq 'Pod::WSDL::Doc' and $m->doc->descr eq 'This method is for blah ...'), 'Retrieving doc works');
 ok((ref $m->params->[0] eq 'Pod::WSDL::Param' and $m->params->[0]->name eq 'myParam'), 'Retrieving param works');
 ok((ref $m->faults->[0] eq 'Pod::WSDL::Fault' and $m->faults->[0]->type eq 'My::Fault'), 'Retrieving fault works');
+ok(ref $m->writer eq 'Pod::WSDL::Writer', 'Pod::WSDL::Writer correctly initialized');
 
 $m->return($ret2);
 $m->doc($doc2);
@@ -47,6 +52,12 @@ ok((ref $m->faults->[0] eq 'Pod::WSDL::Fault' and $m->faults->[0]->type eq 'My::
 ok((ref $m->params->[1] eq 'Pod::WSDL::Param' and $m->params->[1]->name eq 'yourParam'), 'Setting param works');
 ok((ref $m->faults->[1] eq 'Pod::WSDL::Fault' and $m->faults->[1]->descr eq 'This happens if nothing happens'), 'Setting fault works');
 
+$m->oneway(1);
+ok($m->oneway == 1, 'Setting param oneway works');
+
+$m->oneway(0);
+ok($m->oneway == 0, 'Unsetting param oneway works');
+
 eval {
 	$m->name('foo');
 };
@@ -55,3 +66,6 @@ eval {
 	no warnings;
 	ok($@ == undef, 'Renaming method is forbidden.');
 }
+
+ok($m->requestName eq 'fooRequest', 'Method requestName() works');
+ok($m->responseName eq 'fooResponse', 'Method responseName() works');

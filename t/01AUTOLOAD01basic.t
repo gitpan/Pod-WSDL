@@ -14,7 +14,6 @@ sub new {
 1;
 
 package main;
-use Data::Dumper;
 use Test::More tests => 3;
 
 $foo = Foo->new;

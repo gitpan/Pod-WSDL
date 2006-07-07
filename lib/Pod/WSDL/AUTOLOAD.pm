@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 our $AUTOLOAD;
-our $VERSION = "0.02";
+our $VERSION = "0.04";
 
 sub AUTOLOAD {
     my $me     = shift;
@@ -50,7 +50,7 @@ __END__
 
 =head1 NAME
 
-Pod::WSDL::AUTOLOAD - Base class for autoloading
+Pod::WSDL::AUTOLOAD - Base class for autoloading (internal use only)
 
 =head1 SYNOPSIS
 
@@ -114,7 +114,7 @@ Tarek Ahmed, E<lt>luke.lubbock -the character every email address contains- gmx.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005 by Tarek Ahmed
+Copyright (C) 2006 by Tarek Ahmed
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.5 or,

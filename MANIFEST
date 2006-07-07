@@ -12,6 +12,7 @@ t/11WSDL03operations.t
 t/07Return01basic.t
 t/11WSDL01basic.t
 t/04Attr01basic.t
+t/04Type01basic.t
 t/01AUTOLOAD02forbiddenmethods.t
 t/06Fault01basic.t
 t/05Doc01basic.t
