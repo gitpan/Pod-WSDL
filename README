@@ -205,12 +205,12 @@ METHODS
         'Foo::Bar' (in which case '/some/directory/modules' has to be in
         @INC) or an open file handle on the file. Right?
 
-    *   location - Target namespace for the WSDL, usually the URL of your
-        webservice.
+    *   location - Target namespace for the WSDL, usually the full URL of
+        your webservice's proxy.
 
     *   pretty - Pretty print WSDL, if true. Otherwise the WSDL will come
-        out in one line. The software generating the client stubs might like
-        that, but a person reading the WSDL won't!
+        out in one line. The software generating the client stubs might not
+        mind, but a person reading the WSDL will!
 
     *   withDocumentation - If true, put available documentation in the WSDL
         (see "Pod Syntax" above). For used own complex types ('modules')
@@ -220,6 +220,17 @@ METHODS
 
   WSDL
     Returns WSDL as string.
+
+   Parameters
+    *   pretty - Pretty print WSDL, if true. Otherwise the WSDL will come
+        out in one line. The software generating the client stubs might not
+        mind, but a person reading the WSDL will!
+
+    *   withDocumentation - If true, put available documentation in the WSDL
+        (see "Pod Syntax" above). For used own complex types ('modules')
+        this will be the output of Pod::Text on these modules. The software
+        generating the client stubs might give a damn, but a person reading
+        the WSDL won't!
 
   addNamespace
     Adds a namespace. Will be taken up in WSDL's definitions element.
@@ -242,6 +253,9 @@ EXTERNAL DEPENDENCIES
 EXAMPLES
     see the *.t files in the distribution
 
+BUGS
+    Please send me any bug reports, I will fix them or mention the bugs here
+    :-)
 
 TODO
   Describe Several Signatures for one Method
@@ -306,27 +320,14 @@ SEE ALSO
       SOAP::Clean::WSDL (I have not tried this)
  
 AUTHOR
-    Tarek Ahmed, <luke.lubbock -the character every email address contains-
-    gmx.net>
-
-VERSION INFORMATION
-    This man page documents Pod::WSDL, version 0.04 and previous.
-  
-BUGS
-    For a question of efficiency, please report any bug you find on CPAN:
-    http://rt.cpan.org/Public/Dist/Display.html?Status=Active&Name=Pod-WSDL
-    There you'll also be able to find out a list of unresolved bugs 
-    (hopefully empty ;-)).
-
-ACKNOLEDGEMENTS
-    Marcos Marado (Mind Booster Noori) from SonaeCom helped developing the 0.04
-    version of Pod::WSDL.
+    Tarek Ahmed, <bloerch -the character every email address contains-
+    oelbsk.org>
 
 COPYRIGHT AND LICENSE
     Copyright (C) 2006 by Tarek Ahmed
 
-	This library is alpha software and comes with no warranty whatsoever.
-	It is free software; you can redistribute it and/or modify
-	it under the same terms as Perl itself, either Perl version 5.8.5 or,
-	at your option, any later version of Perl 5 you may have available.
+    This library is alpha software and comes with no warranty whatsoever. It
+    is free software; you can redistribute it and/or modify it under the
+    same terms as Perl itself, either Perl version 5.8.5 or, at your option,
+    any later version of Perl 5 you may have available.
 

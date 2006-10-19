@@ -1,4 +1,6 @@
-package My::Foo;
+package My::Bar;
+
+sub barSub {}
 
 1;
 
@@ -6,11 +8,11 @@ __END__
 
 =head1 NAME
 
-My::Foo - blah
+My::Bar - blah
 
 =head1 SYNOPSIS
 
-  use My::Foo;
+  use My::Bar;
 
 =head1 DESCRIPTION
 

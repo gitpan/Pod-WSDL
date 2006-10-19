@@ -10,7 +10,7 @@ use Pod::WSDL::Writer;
 use Pod::WSDL::Utils qw(:writexml :namespaces :messages);
 use Pod::WSDL::AUTOLOAD;
 
-our $VERSION = "0.04";
+our $VERSION = "0.05";
 our @ISA = qw/Pod::WSDL::AUTOLOAD/;
 
 our $EMPTY_MESSAGE_NAME    = 'empty';
@@ -254,7 +254,7 @@ sub writeBindingOperation {
 			
 	for my $fault (@{$me->faults}) {
 		$me->writer->wrElem($START_PREFIX_NAME, "wsdl:fault", name => $fault->wsdlName);
-		$me->writer->wrElem($EMPTY_PREFIX_NAME, "wsdlsoap:fault", encodingStyle => "http://schemas.xmlsoap.org/soap/encoding/", namespace => $location, use => $use);
+		$me->writer->wrElem($EMPTY_PREFIX_NAME, "wsdlsoap:fault", name => $fault->wsdlName, encodingStyle => "http://schemas.xmlsoap.org/soap/encoding/", namespace => $location, use => $use);
 		$me->writer->wrElem($END_PREFIX_NAME, "wsdl:fault");
 	}
 
@@ -401,7 +401,7 @@ see Pod::WSDL
  
 =head1 AUTHOR
 
-Tarek Ahmed, E<lt>luke.lubbock -the character every email address contains- gmx.netE<gt>
+Tarek Ahmed, E<lt>bloerch -the character every email address contains- oelbsk.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

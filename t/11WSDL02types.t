@@ -86,7 +86,7 @@ ok($xp->exists('/wsdl:definitions/wsdl:types/schema[@targetNamespace = "http://l
 ok($xp->exists('/wsdl:definitions/wsdl:types/schema/import[@namespace = "http://schemas.xmlsoap.org/soap/encoding/"]'), 'Found import of namespace "http://schemas.xmlsoap.org/soap/encoding/" in schema in xml output.');
 ok($xp->exists('/wsdl:definitions/wsdl:types/schema/complexType[@name = "MyFoo"]'), 'Found complex type MyFoo in xml output.');
 ok($xp->exists('/wsdl:definitions/wsdl:types/schema/complexType/sequence/element[@name = "_bar" and @type = "xsd:negativeInteger"]'), 'Found element with name "_bar" and type xsd:negativeInteger in complex type MyFoo in xml output.');
-ok($xp->exists('/wsdl:definitions/wsdl:types/schema/complexType/sequence/element/wsdl:documentation[text() = "a bar"]'), 'Found documentation for element with name "_bar" in complex type MyFoo in xml output.');
+ok($xp->exists('/wsdl:definitions/wsdl:types/schema/complexType/sequence/element/annotation/documentation[text() = "a bar"]'), 'Found documentation for element with name "_bar" in complex type MyFoo in xml output.');
 
 # test array types
 ok($xp->exists('/wsdl:definitions/wsdl:types/schema/complexType[@name = "ArrayOfString"]'), 'Found array type ArrayOfString in xml output.');

@@ -6,7 +6,7 @@ use XML::Writer;
 use Pod::WSDL::Utils ':writexml';
 
 our $AUTOLOAD;
-our $VERSION = "0.04";
+our $VERSION = "0.05";
 
 our $INDENT_CHAR = "\t";
 our $NL_CHAR     = "\n";
@@ -29,9 +29,8 @@ sub new {
 		_faultMessageWritten => {},
 		_emptyMessageWritten => 0,
 	}, $pkg;
-
-	$me->{_writer} = new XML::Writer(OUTPUT => $me->{_outStr});
-	$me->{_writer}->xmlDecl("UTF-8");
+	
+	$me->prepare;
 
 	return $me;	
 		
@@ -72,9 +71,19 @@ sub wrElem {
 
 sub wrDoc {
 	my $me  = shift;
-	my $txt = shift;
 
 	return unless $me->{_withDocumentation};
+
+	my $txt = shift;
+	my %args = @_;
+	my $useAnnotation = 0;
+	my $docTagName = "wsdl:documentation";
+	
+	if (%args and $args{useAnnotation}) {
+		$useAnnotation = 1;
+		$docTagName = "documentation";
+	}
+
 
 	$txt ||= '';
 	$txt =~ s/\s+$//;
@@ -82,14 +91,39 @@ sub wrDoc {
 	return unless $txt;
 	
 	$me->{_writer}->characters($INDENT_CHAR x ($me->{_indent} + ($me->{_lastTag} eq $START_PREFIX_NAME ? 1 : 0))) if $me->{_pretty};
-	$me->{_writer}->startTag("wsdl:documentation");
+
+	if ($useAnnotation) {
+		$me->{_writer}->startTag("annotation") ;
+		$me->wrNewLine;
+		$me->{_indent}++;
+		$me->{_writer}->characters($INDENT_CHAR x ($me->{_indent} + ($me->{_lastTag} eq $START_PREFIX_NAME ? 1 : 0))) if $me->{_pretty};
+	}
+	
+	$me->{_writer}->startTag($docTagName);
 	$me->{_writer}->characters($txt);
-	$me->{_writer}->endTag("wsdl:documentation");
+	$me->{_writer}->endTag($docTagName);
+
+	if ($useAnnotation) {
+		$me->wrNewLine;
+		$me->{_indent}--;
+		$me->{_writer}->characters($INDENT_CHAR x ($me->{_indent} + ($me->{_lastTag} eq $START_PREFIX_NAME ? 1 : 0))) if $me->{_pretty};
+		$me->{_writer}->endTag("annotation");
+	}
+	
 	$me->wrNewLine;
 }
 
 sub output {
-	return ${$_[0]->{_outStr}};
+	my $me = shift;
+	return ${$me->{_outStr}};
+}
+
+sub prepare {
+	my $me = shift;
+	${$me->{_outStr}} = "";
+	$me->{_emptyMessageWritten} = 0;
+	$me->{_writer} = new XML::Writer(OUTPUT => $me->{_outStr});
+	$me->{_writer}->xmlDecl("UTF-8");
 }
 
 sub withDocumentation {
@@ -101,6 +135,18 @@ sub withDocumentation {
 		return $me;
 	} else {
 		return $me->{_withDocumentation};
+	}
+}
+
+sub pretty {
+	my $me = shift;
+	my $arg = shift;
+	
+	if (defined $arg) {
+		$me->{_pretty} = $arg;
+		return $me;
+	} else {
+		return $me->{_pretty};
 	}
 }
 
@@ -212,7 +258,7 @@ see Pod::WSDL
  
 =head1 AUTHOR
 
-Tarek Ahmed, E<lt>luke.lubbock -the character every email address contains- gmx.netE<gt>
+Tarek Ahmed, E<lt>bloerch -the character every email address contains- oelbsk.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

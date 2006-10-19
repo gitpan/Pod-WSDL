@@ -4,7 +4,7 @@ use warnings;
 
 use Pod::WSDL::AUTOLOAD;
 
-our $VERSION = "0.04";
+our $VERSION = "0.05";
 our @ISA = qw/Pod::WSDL::AUTOLOAD/;
 sub new {
 	my ($pkg, $str) = @_;
@@ -61,7 +61,7 @@ see Pod::WSDL
  
 =head1 AUTHOR
 
-Tarek Ahmed, E<lt>luke.lubbock -the character every email address contains- gmx.netE<gt>
+Tarek Ahmed, E<lt>bloerch -the character every email address contains- oelbsk.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

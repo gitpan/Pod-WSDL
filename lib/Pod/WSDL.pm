@@ -24,7 +24,7 @@ use Pod::WSDL::AUTOLOAD;
 # ------------------ > "CONSTANTS" ----------------------------------------- #
 # -------------------------------------------------------------------------- #
 
-our $VERSION                = "0.04";
+our $VERSION                = "0.05";
 our @ISA                    = qw/Pod::WSDL::AUTOLOAD/;
 
 our $WSDL_METHOD_REGEXP_BEG = qr/^=(?:begin)\s+wsdl\s*\n(.*?)^=(?:cut|end\s+wsdl).*?^\s*sub\s+(\w+)/ims;
@@ -88,6 +88,13 @@ sub new {
 	croak "'style' argument may only be one of $RPC_STYLE or $DOCUMENT_STYLE, died" if $me->style ne $RPC_STYLE and $me->style ne $DOCUMENT_STYLE;
 	croak "The combination of use=$ENCODED_USE and style=$DOCUMENT_STYLE is not valid, died" if ($me->style eq $DOCUMENT_STYLE and $me->use eq $ENCODED_USE);
 
+	## AHICOX 10/12/2006
+	## this is a quick and dirty hack to set the baseName
+	## the baseName should probably be set from the POD 
+	## source (which is why it's set in _getModuleCode)
+	## this quick hack takes the 'name' parameter when
+	## we create the object, and 
+	
 	$me->_initSource($data{'source'});
 	$me->_initNS;
 	$me->_initTypes;
@@ -97,9 +104,16 @@ sub new {
 
 sub WSDL {
 	my $me = shift;
+	my %args = @_;
 	
 	my $wr = $me->writer;
+	$wr->prepare;
 
+	if (%args) {
+		$wr->pretty($args{pretty}) if defined $args{pretty};
+		$wr->withDocumentation($args{withDocumentation}) if defined $args{withDocumentation};
+	} 
+	
 	$me->writer->comment("WSDL for " . $me->{_location} . " created by " . ref ($me) . " version: $VERSION on " . scalar localtime);
 	$me->writer->startTag('wsdl:definitions', targetNamespace => $me->targetNS, %{$me->{_namespaces}});
 	$me->writer->wrNewLine(2);
@@ -153,10 +167,7 @@ sub _initSource {
 	
 	my ($baseName, $contents) = $me->_getModuleCode($src, 1);
 	
-	unless ($baseName) {
-		($baseName = $src) =~ s/::(.)/uc $1/eg;
-	}
-
+	#set the baseName in the object
 	$me->baseName($baseName);
 
 	# find =begin wsdl ... =end
@@ -172,14 +183,18 @@ sub _initSource {
 
 sub _initTypes {
 	my $me = shift;
+
 	
 	for my $method (@{$me->{_methods}}) {
     for my $param (@{$method->params},$method->return) {
       next unless $param;
-			unless (exists $XSD_STANDARD_TYPE_MAP{$param->type}) {
+			unless (exists $XSD_STANDARD_TYPE_MAP{$param->type}) {				
 				$me->_addType($param->type, $param->array);
 			} elsif ($param->array) {
-				$me->{_standardTypeArray}->{$param->type} = 1;
+				
+				#AHICOX: 10/10/2006
+				#changed to _standardTypeArrays (was singular)
+				$me->{_standardTypeArrays}->{$param->type} = 1;
 			}
 		}
 
@@ -189,6 +204,7 @@ sub _initTypes {
 			}
 		}
 	}
+
 }
 
 sub _addType {
@@ -229,7 +245,10 @@ sub _addType {
 		unless (exists $XSD_STANDARD_TYPE_MAP{$attr->type}) {
 			$me->_addType($attr->type, $attr->array);
 		} elsif ($attr->array) {
-			$me->{_standardTypeArray}->{$attr->type} = 1;
+			
+			#AHICOX: 10/10/2006
+			#changed to _standardTypeArrays (was singular)
+			$me->{_standardTypeArrays}->{$attr->type} = 1;
 		}
 	}
 }
@@ -285,45 +304,64 @@ sub _getModuleCode {
 	my $me     = shift;
 	my $src    = shift;
 	my $findNS = shift;
-	my $isFileName;
 	
 	if (ref $src and ($src->isa('IO::Handle') or $src->isa('GLOB'))) {
 		local $/ = undef;
 		my $contents = <$src>;
 		$me->_setTargetNS($contents) if $findNS;
-		return ($DEFAULT_BASE_NAME, $contents);
-	}
-
-	my $moduleFile;
-	
-	if (-e $src) {
-		$moduleFile = $src;
-		$isFileName = 1;
+		
+		##AHICOX: 10/12/2006
+		##attempt to construct a base name based on the package
+		my $baseName = $DEFAULT_BASE_NAME;
+		$src =~ /package\s+(.*?)\s*;/s;
+		if ($1){
+			$baseName = $1;
+			$baseName =~ s/::(.)/uc $1/eg;
+		}
+		
+		return ($baseName, $contents);
 	} else {
-		my $subDir = $src;
-		$subDir =~ s!::!/!g;
 	
-		my @files = map {"$_/$subDir.pm"} @INC;
+		my $moduleFile;
 		
-		my $foundPkg = 0;
+		if (-e $src) {
+			$moduleFile = $src;
+		} else {
+			my $subDir = $src;
+			$subDir =~ s!::!/!g;
 		
-		for my $file (@files) {
-			if (-e $file) {
-				$moduleFile = $file;
-				last;
+			my @files = map {"$_/$subDir.pm"} @INC;
+			
+			my $foundPkg = 0;
+			
+			for my $file (@files) {
+				if (-e $file) {
+					$moduleFile = $file;
+					last;
+				}
 			}
 		}
-	}
-
-	if ($moduleFile) {
-		open IN, $moduleFile or die "Could not open $moduleFile, died";
-		local $/ = undef;
-		my $contents = <IN>;
-		close IN;
-		$me->_setTargetNS($contents) if $findNS;
-		return ($isFileName ? $DEFAULT_BASE_NAME : undef, $contents);
-	} else {
-		die "Can't find any file '$src' and can't locate it as a module in \@INC either (\@INC contains " . join (" ", @INC) . "), died";	
+	
+		if ($moduleFile) {
+			open IN, $moduleFile or die "Could not open $moduleFile, died";
+			local $/ = undef;
+			my $contents = <IN>;
+			close IN;
+			$me->_setTargetNS($contents) if $findNS;
+			
+			##AHICOX: 10/12/2006
+			##attempt to construct a base name based on the package
+			my $baseName = $DEFAULT_BASE_NAME;
+			$contents =~ /package\s+(.*?)\s*;/s;
+			if ($1){
+				$baseName = $1;
+				$baseName =~ s/::(.)/uc $1/eg;
+			}
+			
+			return ($baseName, $contents);
+		} else {
+			die "Can't find any file '$src' and can't locate it as a module in \@INC either (\@INC contains " . join (" ", @INC) . "), died";	
+		}
 	}
 }
 
@@ -593,6 +631,20 @@ withDocumentation - If true, put available documentation in the WSDL (see "Pod S
 
 Returns WSDL as string.
 
+=head3 Parameters
+
+=over 4
+
+=item
+
+pretty - Pretty print WSDL, if true. Otherwise the WSDL will come out in one line. The software generating the client stubs might not mind, but a person reading the WSDL will!
+
+=item
+
+withDocumentation - If true, put available documentation in the WSDL (see "Pod Syntax" above). For used own complex types ('modules') this will be the output of Pod::Text on these modules. The software generating the client stubs might give a damn, but a person reading the WSDL won't!
+
+=back
+
 =head2 addNamespace
 
 Adds a namespace. Will be taken up in WSDL's definitions element.
@@ -685,7 +737,7 @@ Pod::WSDL writes WSDL documents in encoded RPC style. It should be able to gener
  
 =head1 AUTHOR
 
-Tarek Ahmed, E<lt>luke.lubbock -the character every email address contains- gmx.netE<gt>
+Tarek Ahmed, E<lt>bloerch -the character every email address contains- oelbsk.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

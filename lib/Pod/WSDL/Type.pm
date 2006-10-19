@@ -6,7 +6,7 @@ use Pod::WSDL::Attr;
 use Pod::WSDL::Utils qw(:writexml :namespaces :types);
 use Pod::WSDL::AUTOLOAD;
 
-our $VERSION = "0.04";
+our $VERSION = "0.05";
 our @ISA = qw/Pod::WSDL::AUTOLOAD/;
 
 our %FORBIDDEN_METHODS = (
@@ -79,7 +79,7 @@ sub writeComplexType {
 	my $ownTypes = shift;
 
 	$me->writer->wrElem($START_PREFIX_NAME, "complexType",  name => $me->wsdlName);
-	$me->writer->wrDoc($me->descr);
+	$me->writer->wrDoc($me->descr, useAnnotation => 1);
 	
 	if ($me->reftype eq 'HASH') {
 		
@@ -92,7 +92,7 @@ sub writeComplexType {
 			$tmpArgs{nillable} = $attr->nillable if $attr->nillable;
 			
 			$me->writer->wrElem($START_PREFIX_NAME, "element", %tmpArgs);
-			$me->writer->wrDoc($attr->descr);
+			$me->writer->wrDoc($attr->descr, useAnnotation => 1);
 			$me->writer->wrElem($END_PREFIX_NAME, "element");
 		}
 	
@@ -188,7 +188,7 @@ see Pod::WSDL
  
 =head1 AUTHOR
 
-Tarek Ahmed, E<lt>luke.lubbock -the character every email address contains- gmx.netE<gt>
+Tarek Ahmed, E<lt>bloerch -the character every email address contains- oelbsk.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

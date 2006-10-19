@@ -13,7 +13,7 @@ our %EXPORT_TAGS = (
 );
 
 our @EXPORT_OK = (@{$EXPORT_TAGS{writexml}}, @{$EXPORT_TAGS{namespaces}}, @{$EXPORT_TAGS{messages}}, @{$EXPORT_TAGS{types}});
-our $VERSION = "0.04";
+our $VERSION = "0.05";
 
 # writexml
 our $END_PREFIX_NAME       = 'end';
@@ -153,7 +153,7 @@ see Pod::WSDL
  
 =head1 AUTHOR
 
-Tarek Ahmed, E<lt>luke.lubbock -the character every email address contains- gmx.netE<gt>
+Tarek Ahmed, E<lt>bloerch -the character every email address contains- oelbsk.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
