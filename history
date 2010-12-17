@@ -1,0 +1,18 @@
+  520  git clone git@github.com:tavaresb/Pod--WSDL.git
+  522  cd Pod--WSDL/
+  525  git branch
+  526  git branch -a
+  527  git tag
+  528  vi README 
+  529  git status
+  530  git add README 
+  531  git commit 
+  532  git status
+  533  git push
+  534  git branch -a
+  535  git pull 
+  549  cd PODwsdl/Pod--WSDL/
+  551  vi dist.ini 
+  552  git pull
+  556  dzil test
+  560  dzil clean

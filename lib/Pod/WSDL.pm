@@ -24,7 +24,7 @@ use Pod::WSDL::AUTOLOAD;
 # ------------------ > "CONSTANTS" ----------------------------------------- #
 # -------------------------------------------------------------------------- #
 
-our $VERSION                = "0.05";
+our $VERSION                = "0.05.2";
 our @ISA                    = qw/Pod::WSDL::AUTOLOAD/;
 
 our $WSDL_METHOD_REGEXP_BEG = qr/^=(?:begin)\s+wsdl\s*\n(.*?)^=(?:cut|end\s+wsdl).*?^\s*sub\s+(\w+)/ims;
@@ -559,13 +559,13 @@ An example could be the following:
 
   _FAULT My::Fault If anything goes wrong
 
-Since you probably won't return an array of fault objects, you do not need to use the C<($|@)> tokens. Just say that you return a fault, declare it's type and add an optional description.
+Since you probably won't return an array of fault objects, you do not need to use the C<($|@)> tokens. Just say that you return a fault, declare its type and add an optional description.
 
 As with parameters (but in contrary to C<_RETURN> instructions) you can declare as many C<_FAULT> instructions as you like, providing for different exception types your method might throw.
 
 =head3 Method Documentation
 
-Method documentation is easily explained. It's structure is 
+Method documentation is easily explained. Its structure is 
   
   _DOC Here comes my documentation ...
 
