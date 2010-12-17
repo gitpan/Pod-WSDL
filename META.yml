@@ -21,4 +21,4 @@ requires:
   XML::XPath: 1.13
 resources:
   repository: http://github.com/tavaresb/Pod--WSDL
-version: 0.06
+version: 0.061

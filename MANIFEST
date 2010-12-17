@@ -4,14 +4,6 @@ META.yml
 Makefile.PL
 README
 dist.ini
-history
-jtests/1.wsdl
-jtests/1st.wsdl
-jtests/2-fix.wsdl
-jtests/2.wsdl
-jtests/example1.pm
-jtests/example2.pm
-jtests/podwsdl.pl
 lib/Pod/WSDL.pm
 lib/Pod/WSDL/AUTOLOAD.pm
 lib/Pod/WSDL/Attr.pm
